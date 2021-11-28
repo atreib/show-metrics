@@ -1,0 +1,71 @@
+TOTAL (from all projects and any metric)
+
+Total of commits: 770
+Commits that increased any metric: 225
+Commits that decreased any metric: 176
+Commits that maintained any metric: 369
+% of improvement: 22,86%
+% of worseness: 29,22%
+% of maintainement: 47.92%
+
+COMPLEXITY 
+
+Total of commits: 201
+Commits that increased any complexity metric: 59
+Commits that decreased any complexity metric: 33
+Commits that maintained any complexity metric: 109
+% of improvement: 16.42%
+% of worseness: 29.36%
+% of maintainement: 54.22%
+
+CC
+
+Total of commits: 201
+Commits that increased the CC: 59
+Commits that decreased the CC: 33
+Commits that maintained the CC: 109
+% of improvement: 16.42%
+% of worseness: 29.36%
+% of maintainement: 54.22%
+
+__________________
+
+SIZE
+
+Total of commits: 607
+Commits that increased any size metric: 188
+Commits that decreased any size metric: 135
+Commits that maintained any size metric: 284
+% of improvement: 22,24%
+% of worseness: 30.97%
+% of maintainement: 46,79%
+
+LOC
+
+Total of commits: 607
+Commits that increased the LOC: 223
+Commits that decreased the LOC: 99
+Commits that maintained the LOC: 285
+% of improvement: 16,30%
+% of worseness: 36,74%
+% of maintainement: 46,96%
+
+CLOC
+
+Total of commits: 607
+Commits that increased the CLOC: 191
+Commits that decreased the CLOC: 81
+Commits that maintained the CLOC: 335
+% of improvement: 13,35%
+% of worseness: 31,47%
+% of maintainement: 55,18%
+
+STMTC
+
+Total of commits: 607
+Commits that increased the STMTC: 194
+Commits that decreased the STMTC: 95
+Commits that maintained the STMTC: 318
+% of improvement: 15,65%
+% of worseness: 31,96%
+% of maintainement: 52,39%

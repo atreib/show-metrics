@@ -1,0 +1,227 @@
+AXIOS 
+
+Cyclomatic Complexity (CC)
+Total of commits: 11
+Commits that increased the CC: 7
+Commits that decreased the CC: 0
+Commits that maintained the CC: 4
+63.64% of worsening
+0.00% of improvement
+36.36% do not impact
+
+Lines (LOC)
+Total of commits: 25
+Commits that increased the LOC: 18
+Commits that decreased the LOC: 3
+Commits that maintained the LOC: 4
+72.00% of worsening
+12.00% of improvement
+16.00% do not impact
+
+Lines with comments (CLOC)
+Total of commits: 25
+Commits that increased the CLOC: 14
+Commits that decreased the CLOC: 4
+Commits that maintained the CLOC: 7
+56.00% of worsening
+16.00% of improvement
+28.00% do not impact
+
+Statements (STMTC)
+Total of commits: 25
+Commits that increased the STMTC: 17
+Commits that decreased the STMTC: 3
+Commits that maintained the STMTC: 5
+68.00% of worsening
+12.00% of improvement
+20.00% do not impact
+
+LODASH
+
+Cyclomatic Complexity (CC)
+Total of commits: 6
+Commits that increased the CC: 1
+Commits that decreased the CC: 2
+Commits that maintained the CC: 3
+16.67% of worsening
+33.33% of improvement
+50.00% do not impact
+
+Lines (LOC)
+Total of commits: 175
+Commits that increased the LOC: 88
+Commits that decreased the LOC: 34
+Commits that maintained the LOC: 53
+50.29% of worsening
+19.43% of improvement
+30.29% do not impact
+
+Lines with comments (CLOC)
+Total of commits: 175
+Commits that increased the CLOC: 81
+Commits that decreased the CLOC: 20
+Commits that maintained the CLOC: 74
+46.29% of worsening
+11.43% of improvement
+42.29% do not impact
+
+Statements (STMTC)
+Total of commits: 175
+Commits that increased the STMTC: 67
+Commits that decreased the STMTC: 31
+Commits that maintained the STMTC: 77
+38.29% of worsening
+17.71% of improvement
+44.00% do not impact
+
+MOMENT
+
+Cyclomatic Complexity (CC)
+Total of commits: 19
+Commits that increased the CC: 3
+Commits that decreased the CC: 3
+Commits that maintained the CC: 13
+15.79% of worsening
+15.79% of improvement
+68.42% do not impact
+
+Lines (LOC)
+Total of commits: 105
+Commits that increased the LOC: 25
+Commits that decreased the LOC: 11
+Commits that maintained the LOC: 69
+23.81% of worsening
+10.48% of improvement
+65.71% do not impact
+
+Lines with comments (CLOC)
+Total of commits: 105
+Commits that increased the CLOC: 23
+Commits that decreased the CLOC: 11
+Commits that maintained the CLOC: 71
+21.90% of worsening
+10.48% of improvement
+67.62% do not impact
+
+Statements (STMTC)
+Total of commits: 105
+Commits that increased the STMTC: 26
+Commits that decreased the STMTC: 10
+Commits that maintained the STMTC: 69
+24.76% of worsening
+9.52% of improvement
+65.71% do not impact
+
+PM2
+
+Cyclomatic Complexity (CC)
+Total of commits: 57
+Commits that increased the CC: 8
+Commits that decreased the CC: 11
+Commits that maintained the CC: 38
+14.04% of worsening
+19.30% of improvement
+66.67% do not impact
+
+Lines (LOC)
+Total of commits: 100
+Commits that increased the LOC: 13
+Commits that decreased the LOC: 27
+Commits that maintained the LOC: 60
+13.00% of worsening
+27.00% of improvement
+60.00% do not impact
+
+Lines with comments (CLOC)
+Total of commits: 100
+Commits that increased the CLOC: 13
+Commits that decreased the CLOC: 19
+Commits that maintained the CLOC: 68
+13.00% of worsening
+19.00% of improvement
+68.00% do not impact
+
+Statements (STMTC)
+Total of commits: 100
+Commits that increased the STMTC: 13
+Commits that decreased the STMTC: 26
+Commits that maintained the STMTC: 61
+13.00% of worsening
+26.00% of improvement
+61.00% do not impact
+
+REACT
+
+Cyclomatic Complexity (CC)
+Total of commits: 68
+Commits that increased the CC: 37
+Commits that decreased the CC: 14
+Commits that maintained the CC: 17
+54.41% of worsening
+20.59% of improvement
+25.00% do not impact
+
+Lines (LOC)
+Total of commits: 117
+Commits that increased the LOC: 72
+Commits that decreased the LOC: 20
+Commits that maintained the LOC: 25
+61.54% of worsening
+17.09% of improvement
+21.37% do not impact
+
+Lines with comments (CLOC)
+Total of commits: 117
+Commits that increased the CLOC: 53
+Commits that decreased the CLOC: 26
+Commits that maintained the CLOC: 38
+45.30% of worsening
+22.22% of improvement
+32.48% do not impact
+
+Statements (STMTC)
+Total of commits: 117
+Commits that increased the STMTC: 63
+Commits that decreased the STMTC: 23
+Commits that maintained the STMTC: 31
+53.85% of worsening
+19.66% of improvement
+26.50% do not impact
+
+TAILWDIND
+
+Cyclomatic Complexity (CC)
+Total of commits: 40
+Commits that increased the CC: 3
+Commits that decreased the CC: 3
+Commits that maintained the CC: 34
+7.50% of worsening
+7.50% of improvement
+85.00% do not impact
+
+Lines (LOC)
+Total of commits: 85
+Commits that increased the LOC: 7
+Commits that decreased the LOC: 4
+Commits that maintained the LOC: 74
+8.24% of worsening
+4.71% of improvement
+87.06% do not impact
+
+Lines with comments (CLOC)
+Total of commits: 85
+Commits that increased the CLOC: 7
+Commits that decreased the CLOC: 1
+Commits that maintained the CLOC: 77
+8.24% of worsening
+1.18% of improvement
+90.59% do not impact
+
+Statements (STMTC)
+Total of commits: 85
+Commits that increased the STMTC: 8
+Commits that decreased the STMTC: 2
+Commits that maintained the STMTC: 75
+9.41% of worsening
+2.35% of improvement
+88.24% do not impact

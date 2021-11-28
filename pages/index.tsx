@@ -14,6 +14,12 @@ enum InternalQualityAttributes {
   SIZE
 };
 
+enum BalanceResult {
+  IMPROVED,
+  WORSED,
+  MAINTAINED
+};
+
 const attributesTechniques = {};
 attributesTechniques[InternalQualityAttributes.COMPLEXITY] = ['MOVE', 'MOVE_RENAME'];
 attributesTechniques[InternalQualityAttributes.SIZE] = ['MOVE_RENAME', 'EXTRACT', 'INLINE', 'RENAME'];
@@ -33,11 +39,17 @@ const HomePage = () => {
   const [lineWCommentsOverTime, setLinesWCommentsOverTime] = useState<string[]>(undefined);
   const [statementsOverTime, setStatementsOverTime] = useState<string[]>();
 
-  // balances
+  // total balance
+  const [totalBalance, setTotalBalance] = useState<Balance>();
+
+  // balance per metric
   const [complexityBalance, setComplexityBalance] = useState<Balance>();
   const [linesBalance, setLinesBalance] = useState<Balance>();
   const [linesWCommentBalance, setLinesWCommentBalance] = useState<Balance>();
   const [statementsBalance, setStatementsBalance] = useState<Balance>();
+
+  // balance per attribute
+  const [sizeBalance, setSizeBalance] = useState<Balance>();
 
   const loadMetrics = async (providedFileName: string): Promise<Measures> => {
     try {
@@ -63,7 +75,7 @@ const HomePage = () => {
     // checking which commits are related to complexity
     const _complexityCommits = Object.keys(commits).map(commit => {
       const thisCommitTechniques = commits[commit];
-      if (thisCommitTechniques.some(x => attributesTechniques[InternalQualityAttributes.COMPLEXITY].includes(x))) 
+      if (thisCommitTechniques.some(x => attributesTechniques[InternalQualityAttributes.COMPLEXITY].includes(x)))
         return commit;
     }).filter(x => !!x);;
     setComplexityCommits(_complexityCommits);
@@ -71,12 +83,43 @@ const HomePage = () => {
     // checking which commits are related to size
     const _sizeCommits = Object.keys(commits).map(commit => {
       const thisCommitTechniques = commits[commit];
-      if (thisCommitTechniques.some(x => attributesTechniques[InternalQualityAttributes.SIZE].includes(x))) 
+      if (thisCommitTechniques.some(x => attributesTechniques[InternalQualityAttributes.SIZE].includes(x)))
         return commit;
     }).filter(x => !!x);;
     setSizeCommits(_sizeCommits);
 
   }, [commits]);
+
+  useEffect(() => {
+    if (!metrics) return;
+
+    // check if anything related to size was improved
+    const totalBalance = { increase: 0, decrease: 0, maintain: 0 };
+    Object.keys(metrics).forEach(commit => {
+      const commitMetrics = metrics[commit];
+        if (commitMetrics.after && commitMetrics.before) {
+          let hasImprovedAnything: BalanceResult = BalanceResult.MAINTAINED;
+
+          if (commitMetrics.before.lines > commitMetrics.after.lines) hasImprovedAnything = BalanceResult.IMPROVED;
+          if (commitMetrics.before.comment_lines > commitMetrics.after.comment_lines) hasImprovedAnything = BalanceResult.IMPROVED;
+          if (commitMetrics.before.statements > commitMetrics.after.statements) hasImprovedAnything = BalanceResult.IMPROVED;
+          if (commitMetrics.before.complexity > commitMetrics.after.complexity) hasImprovedAnything = BalanceResult.IMPROVED;
+
+          if (hasImprovedAnything === BalanceResult.MAINTAINED) {
+            if (commitMetrics.after.lines > commitMetrics.before.lines) hasImprovedAnything = BalanceResult.WORSED;
+            if (commitMetrics.after.comment_lines > commitMetrics.before.comment_lines) hasImprovedAnything = BalanceResult.WORSED;
+            if (commitMetrics.after.statements > commitMetrics.before.statements) hasImprovedAnything = BalanceResult.WORSED;
+            if (commitMetrics.after.complexity > commitMetrics.before.complexity) hasImprovedAnything = BalanceResult.WORSED;
+          }
+
+          if (hasImprovedAnything === BalanceResult.IMPROVED) totalBalance.decrease++;
+          if (hasImprovedAnything === BalanceResult.WORSED) totalBalance.increase++;
+          if (hasImprovedAnything === BalanceResult.MAINTAINED) totalBalance.maintain++;
+        }
+    });
+    setTotalBalance(totalBalance);
+
+  }, [metrics])
 
   useEffect(() => {
     if (!metrics || !complexityCommits) return;
@@ -98,7 +141,7 @@ const HomePage = () => {
     }).filter(x => !!x);
     setComplexityBalance(complexityBalance);
     setComplexityOverTime(_complexityOverTime);
-    
+
   }, [metrics, complexityCommits]);
 
   useEffect(() => {
@@ -151,7 +194,33 @@ const HomePage = () => {
     }).filter(x => !!x);
     setStatementsBalance(statementsBalance);
     setStatementsOverTime(_statements);
-    
+
+    // check if anything related to size was improved
+    const sizeBalance = { increase: 0, decrease: 0, maintain: 0 };
+    Object.keys(metrics).forEach(commit => {
+      if (sizeCommits.includes(commit)) {
+        const commitMetrics = metrics[commit];
+        if (commitMetrics.after && commitMetrics.before) {
+          let hasImprovedAnything: BalanceResult = BalanceResult.MAINTAINED;
+
+          if (commitMetrics.before.lines > commitMetrics.after.lines) hasImprovedAnything = BalanceResult.IMPROVED;
+          if (commitMetrics.before.comment_lines > commitMetrics.after.comment_lines) hasImprovedAnything = BalanceResult.IMPROVED;
+          if (commitMetrics.before.statements > commitMetrics.after.statements) hasImprovedAnything = BalanceResult.IMPROVED;
+
+          if (hasImprovedAnything === BalanceResult.MAINTAINED) {
+            if (commitMetrics.after.lines > commitMetrics.before.lines) hasImprovedAnything = BalanceResult.WORSED;
+            if (commitMetrics.after.comment_lines > commitMetrics.before.comment_lines) hasImprovedAnything = BalanceResult.WORSED;
+            if (commitMetrics.after.statements > commitMetrics.before.statements) hasImprovedAnything = BalanceResult.WORSED;
+          }
+
+          if (hasImprovedAnything === BalanceResult.IMPROVED) sizeBalance.decrease++;
+          if (hasImprovedAnything === BalanceResult.WORSED) sizeBalance.increase++;
+          if (hasImprovedAnything === BalanceResult.MAINTAINED) sizeBalance.maintain++;
+        }
+      }
+    });
+    setSizeBalance(sizeBalance);
+
   }, [metrics, sizeCommits]);
 
   return (
@@ -161,9 +230,40 @@ const HomePage = () => {
         <input type='text' className="bg-black text-green-500 border border-green-500" onChange={(event) => setFilename(event.target.value)} />
         <input type='button' className="bg-black text-green-500 border border-green-500 py-2 px-4 cursor-pointer" onClick={loadData} value={'Fetch'} />
       </div>
+      <div className="flex flex-col items-center justify-center">
+        {commits && <div>
+          Total of commits:  {` `}
+          {Object.keys(commits).length}
+        </div>}
+        {sizeBalance && <div>
+            <div>
+              Commits that increased any metric: {totalBalance.increase}
+            </div>
+            <div>
+              Commits that decreased any metric: {totalBalance.decrease}
+            </div>
+            <div>
+              Commits that maintained any metric: {totalBalance.maintain}
+            </div>
+          </div>}
+      </div>
       <div className={"flex flex-row justify-around"}>
         <div className="m-8 overflow-scroll max-h-96 border border-green-500 p-8">
           <h1 className="text-4xl">Complexity metrics</h1>
+          {complexityBalance && <div>
+            <div>
+              Total of commits: {complexityBalance.increase + complexityBalance.decrease + complexityBalance.maintain}
+            </div>
+            <div>
+              Commits that increased any size metric: {complexityBalance.increase}
+            </div>
+            <div>
+              Commits that decreased any size metric: {complexityBalance.decrease}
+            </div>
+            <div>
+              Commits that maintained any size metric: {complexityBalance.maintain}
+            </div>
+          </div>}
           <div>
             {complexityOverTime && <div>
               <div>
@@ -183,19 +283,19 @@ const HomePage = () => {
               </div>
               <div className="text-lg my-4">
                 <div className="text-red-500">
-                  {`${((complexityBalance.increase * 100) / 
-                      (complexityBalance.increase + complexityBalance.decrease + complexityBalance.maintain)
-                    ).toFixed(2)}% of worsening`}
+                  {`${((complexityBalance.increase * 100) /
+                    (complexityBalance.increase + complexityBalance.decrease + complexityBalance.maintain)
+                  ).toFixed(2)}% of worsening`}
                 </div>
                 <div className="text-blue-500">
-                  {`${((complexityBalance.decrease * 100) / 
-                      (complexityBalance.increase + complexityBalance.decrease + complexityBalance.maintain)
-                    ).toFixed(2)}% of improvement`}
+                  {`${((complexityBalance.decrease * 100) /
+                    (complexityBalance.increase + complexityBalance.decrease + complexityBalance.maintain)
+                  ).toFixed(2)}% of improvement`}
                 </div>
                 <div className="text-white">
-                  {`${((complexityBalance.maintain * 100) / 
-                      (complexityBalance.increase + complexityBalance.decrease + complexityBalance.maintain)
-                    ).toFixed(2)}% do not impact`}
+                  {`${((complexityBalance.maintain * 100) /
+                    (complexityBalance.increase + complexityBalance.decrease + complexityBalance.maintain)
+                  ).toFixed(2)}% do not impact`}
                 </div>
               </div>
               {/* <div>
@@ -206,6 +306,20 @@ const HomePage = () => {
         </div>
         <div className="m-8 overflow-scroll max-h-96 border border-green-500 p-8">
           <h1 className="text-4xl">Size metrics</h1>
+          {sizeBalance && <div>
+            <div>
+              Total of commits: {sizeBalance.increase + sizeBalance.decrease + sizeBalance.maintain}
+            </div>
+            <div>
+              Commits that increased any size metric: {sizeBalance.increase}
+            </div>
+            <div>
+              Commits that decreased any size metric: {sizeBalance.decrease}
+            </div>
+            <div>
+              Commits that maintained any size metric: {sizeBalance.maintain}
+            </div>
+          </div>}
           <div>
             {linesOverTime && <div>
               <div>
@@ -225,22 +339,22 @@ const HomePage = () => {
               </div>
               <div className="text-lg my-4">
                 <div className="text-red-500">
-                  {`${((linesBalance.increase * 100) / 
-                      (linesBalance.increase + linesBalance.decrease + linesBalance.maintain)
-                    ).toFixed(2)}% of worsening`}
+                  {`${((linesBalance.increase * 100) /
+                    (linesBalance.increase + linesBalance.decrease + linesBalance.maintain)
+                  ).toFixed(2)}% of worsening`}
                 </div>
                 <div className="text-blue-500">
-                  {`${((linesBalance.decrease * 100) / 
-                      (linesBalance.increase + linesBalance.decrease + linesBalance.maintain)
-                    ).toFixed(2)}% of improvement`}
+                  {`${((linesBalance.decrease * 100) /
+                    (linesBalance.increase + linesBalance.decrease + linesBalance.maintain)
+                  ).toFixed(2)}% of improvement`}
                 </div>
                 <div className="text-white">
-                  {`${((linesBalance.maintain * 100) / 
-                      (linesBalance.increase + linesBalance.decrease + linesBalance.maintain)
-                    ).toFixed(2)}% do not impact`}
+                  {`${((linesBalance.maintain * 100) /
+                    (linesBalance.increase + linesBalance.decrease + linesBalance.maintain)
+                  ).toFixed(2)}% do not impact`}
                 </div>
               </div>
-             {/*  <div>
+              {/*  <div>
                 {linesOverTime.map((x, i) => <div key={i}>{x}</div>)}
               </div> */}
             </div>}
@@ -262,19 +376,19 @@ const HomePage = () => {
               </div>
               <div className="text-lg my-4">
                 <div className="text-red-500">
-                  {`${((linesWCommentBalance.increase * 100) / 
-                      (linesWCommentBalance.increase + linesWCommentBalance.decrease + linesWCommentBalance.maintain)
-                    ).toFixed(2)}% of worsening`}
+                  {`${((linesWCommentBalance.increase * 100) /
+                    (linesWCommentBalance.increase + linesWCommentBalance.decrease + linesWCommentBalance.maintain)
+                  ).toFixed(2)}% of worsening`}
                 </div>
                 <div className="text-blue-500">
-                  {`${((linesWCommentBalance.decrease * 100) / 
-                      (linesWCommentBalance.increase + linesWCommentBalance.decrease + linesWCommentBalance.maintain)
-                    ).toFixed(2)}% of improvement`}
+                  {`${((linesWCommentBalance.decrease * 100) /
+                    (linesWCommentBalance.increase + linesWCommentBalance.decrease + linesWCommentBalance.maintain)
+                  ).toFixed(2)}% of improvement`}
                 </div>
                 <div className="text-white">
-                  {`${((linesWCommentBalance.maintain * 100) / 
-                      (linesWCommentBalance.increase + linesWCommentBalance.decrease + linesWCommentBalance.maintain)
-                    ).toFixed(2)}% do not impact`}
+                  {`${((linesWCommentBalance.maintain * 100) /
+                    (linesWCommentBalance.increase + linesWCommentBalance.decrease + linesWCommentBalance.maintain)
+                  ).toFixed(2)}% do not impact`}
                 </div>
               </div>
               {/* <div>
@@ -299,19 +413,19 @@ const HomePage = () => {
               </div>
               <div className="text-lg my-4">
                 <div className="text-red-500">
-                  {`${((statementsBalance.increase * 100) / 
-                      (statementsBalance.increase + statementsBalance.decrease + statementsBalance.maintain)
-                    ).toFixed(2)}% of worsening`}
+                  {`${((statementsBalance.increase * 100) /
+                    (statementsBalance.increase + statementsBalance.decrease + statementsBalance.maintain)
+                  ).toFixed(2)}% of worsening`}
                 </div>
                 <div className="text-blue-500">
-                  {`${((statementsBalance.decrease * 100) / 
-                      (statementsBalance.increase + statementsBalance.decrease + statementsBalance.maintain)
-                    ).toFixed(2)}% of improvement`}
+                  {`${((statementsBalance.decrease * 100) /
+                    (statementsBalance.increase + statementsBalance.decrease + statementsBalance.maintain)
+                  ).toFixed(2)}% of improvement`}
                 </div>
                 <div className="text-white">
-                  {`${((statementsBalance.maintain * 100) / 
-                      (statementsBalance.increase + statementsBalance.decrease + statementsBalance.maintain)
-                    ).toFixed(2)}% do not impact`}
+                  {`${((statementsBalance.maintain * 100) /
+                    (statementsBalance.increase + statementsBalance.decrease + statementsBalance.maintain)
+                  ).toFixed(2)}% do not impact`}
                 </div>
               </div>
               {/* <div>
